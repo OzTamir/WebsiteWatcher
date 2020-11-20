@@ -1,0 +1,9 @@
+{
+    "watchers": [
+        {
+            "URL": "http://URLTOMONITOR.com/",
+            "Whitelist" : ["REGEX_TO_MATCH_AGAINST"],
+            "Blacklist" : ["REGEX_TO_MATCH_AGAINST"],
+            "AlertAnyChange" : true
+        }
+]}
