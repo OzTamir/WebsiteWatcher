@@ -5,7 +5,7 @@ Utility functions used in the Watcher codebase
 import json
 import logging
 import hashlib
-from watcher import Watcher, InvalidWatcherConfiguration
+from watcher.watcher import Watcher, InvalidWatcherConfiguration
 
 def parse_configuration(json_config: str):
     """Parse the supplied json into a list of Watcher objects.
@@ -37,7 +37,7 @@ def calculate_md5(html: str):
     Returns:
         str: The MD5 of the given HTML string
     """
-    return hashlib.md5(str)
+    return hashlib.md5(html.encode('utf-8'))
 
 
 def search_wordlist(words: list, html: str):

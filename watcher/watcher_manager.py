@@ -2,9 +2,9 @@
 Define the WatcherManager class
 """
 import logging
-from watcher import Watcher
-from change_event import ChangeEvent
-from watcher_utils import calculate_md5, search_wordlist
+from watcher.watcher import Watcher
+from watcher.change_event import ChangeEvent
+from watcher.watcher_utils import calculate_md5, search_wordlist
 
 class WatcherManager:
     """ Manage watchers """
@@ -27,10 +27,15 @@ class WatcherManager:
             ChangeEvent: Information about whether the site changed
         """
         logging.debug(f'Now Running Watcher for {watcher.url}')
-        change = ChangeEvent(watcher.url)
+        change = ChangeEvent()
         # Grab the HTML and calculate the MD5 for it
         new_html = watcher.get_html()
         new_md5 = calculate_md5(new_html)
+
+        # Make sure that if it's the first run we don't alert a change
+        if watcher.md5 is None:
+            watcher.md5 = new_md5
+
         # If the page was changed since the last check
         if new_md5 != watcher.md5:
             # Get the white/black-listed words from the HTML
@@ -56,4 +61,4 @@ class WatcherManager:
         """
         logging.debug('Running a watch iteration...')
         for watcher in self.watchers:
-            yield self.run_watcher(watcher)
+            yield watcher, self.run_watcher(watcher)
