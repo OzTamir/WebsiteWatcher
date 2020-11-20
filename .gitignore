@@ -127,6 +127,8 @@ dmypy.json
 #VS Code
 .vscode/
 
+.DS_Store
+
 # Secrets folder
 secrets/
-.DS_Store
+config.json
