@@ -1,6 +1,7 @@
 '''
 Define a Python class to hold the watcher information
 '''
+import requests
 
 class InvalidWatcherConfiguration(Exception):
     ''' Indicate the the configuration given to the watcher is invalid '''
@@ -9,19 +10,14 @@ class InvalidWatcherConfiguration(Exception):
 class Watcher:
     ''' Hold information about a watcher '''
     def __init__(self, watcher_item: dict):
-        '''Initiate a watcher object from the config file.
+        """Initiate a watcher object from the config file.
 
-        Parameters
-        ----------
-        watcher_item : dict
-            A dictionary from the JSON array in config.json
+        Args:
+            watcher_item (dict): A dictionary from the JSON array in config.json
 
-        Raises
-        ------
-        InvalidWatcherConfiguration
-            If the configuration is incomplete.
-        """
-        '''
+        Raises:
+            InvalidWatcherConfiguration: If the configuration is incomplete.
+        """        
         try:
             self.url = watcher_item['URL']
             self.whitelist = watcher_item['Whitelist']
@@ -32,9 +28,31 @@ class Watcher:
             invalid_key = exception.args[0]
             raise InvalidWatcherConfiguration(
                 f'Invalid configuration! Key {invalid_key} was not supplied!'
-            )
+            )    
+
+
+    def get_html(self):
+        """Get the current HTML from the web
+
+        Returns:
+            str: The HTML retrived from the given URL
+        """      
+        return requests.get(self.url).text
+
     
+    def set_hash(self, new_hash: str):
+        """Set the last known hash to a new value
+
+        Args:
+            new_hash (str): the updated hash
+        """
+        self.md5 = new_hash
+
 
     def __hash__(self):
-        ''' Return the known hash of the website '''
+        """Get the last known hash of the site's HTML
+
+        Returns:
+            str: The last calculated hash
+        """        
         return self.md5

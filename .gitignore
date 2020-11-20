@@ -129,3 +129,4 @@ dmypy.json
 
 # Secrets folder
 secrets/
+.DS_Store
