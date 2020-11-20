@@ -26,7 +26,7 @@ class WatcherManager:
         Returns:
             ChangeEvent: Information about whether the site changed
         """
-        logging.debug(f'Now Running Watcher for {watcher.url}')
+        logging.info(f'Now Running Watcher for {watcher.url}')
         change = ChangeEvent()
         # Grab the HTML and calculate the MD5 for it
         new_html = watcher.get_html()
@@ -38,6 +38,7 @@ class WatcherManager:
 
         # If the page was changed since the last check
         if new_md5 != watcher.md5:
+            logging.debug(f'Found new MD5! {new_md5}')
             # Get the white/black-listed words from the HTML
             whitelisted = search_wordlist(watcher.whitelist, new_html)
             blacklisted = search_wordlist(watcher.blacklist, new_html)

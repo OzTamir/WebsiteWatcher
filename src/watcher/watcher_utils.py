@@ -15,7 +15,8 @@ def parse_configuration(json_config: str):
 
     Returns:
         list: List of the configurations as Watcher objects
-    """    
+    """
+    logging.debug('Parsing configuraion...')
     config = json.loads(json_config)
     watcher_objects = []
     for idx, watcher_item in enumerate(config.get('watchers')):
@@ -25,6 +26,8 @@ def parse_configuration(json_config: str):
             )
         except InvalidWatcherConfiguration:
             logging.error(f'Invalid Configuration (#{idx + 1})!')
+    number_of_watchers = len(watcher_objects)
+    logging.info(f'Parsed {number_of_watchers} watchers')
     return watcher_objects
 
 

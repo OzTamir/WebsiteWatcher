@@ -6,7 +6,7 @@ from watcher.watcher_utils import parse_configuration
 from watcher.watcher_manager import WatcherManager
 from secrets import TELEGRAM_TOKEN, BOT_PASSWORD
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 CONFIG_FILE = 'example_config.json'
 TICK_FREQUENCY = 60
 
@@ -20,9 +20,8 @@ class Bot:
 
         Args:
             bot (Bot): The bot class
-            context (telegram.ext.Updater): Object used for interaction with Telegram
+            context (telegram.ext.callbackcontext.CallbackContext): Object used for interaction with Telegram
         """
-        logging.info(type(context))
         for watcher, change in bot.manager.watch():
             # Skip the logic if there was no change
             if not change.did_change:
