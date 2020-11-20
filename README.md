@@ -5,7 +5,7 @@
 0. [Create a telegram bot](https://core.telegram.org/bots) and get your token.
 1. Clone the repository locally:
 ```bash
-git clone https://github.com/OzTamir/WebsiteWatcher.git`
+git clone https://github.com/OzTamir/WebsiteWatcher.git
 ```
 2. Create a folder to store the bot's secrets:
 ```bash
