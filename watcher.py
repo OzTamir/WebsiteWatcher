@@ -1,23 +1,60 @@
-import json
-import logging
-from watcher_class import Watcher, InvalidWatcherConfiguration
+"""
+Define the Watcher class
+"""
+import requests
 
-def parse_configuration(json_config: str):
-    """Parse the supplied json into a list of Watcher objects.
+class InvalidWatcherConfiguration(Exception):
+    """ Indicate the the configuration given to the watcher is invalid """
+    pass
 
-    Args:
-        json_config (str): Raw JSON from config.json
+class Watcher:
+    """ Hold information about a watcher """
+    def __init__(self, watcher_item: dict):
+        """Initiate a watcher object from the config file.
 
-    Returns:
-        list: List of the configurations as Watcher objects
-    """    
-    config = json.loads(json_config)
-    watcher_objects = []
-    for idx, watcher_item in enumerate(config.get('watchers')):
+        Args:
+            watcher_item (dict): A dictionary from the JSON array in config.json
+
+        Raises:
+            InvalidWatcherConfiguration: If the configuration is incomplete.
+        """        
         try:
-            watcher_objects.append(
-                Watcher(watcher_item)
-            )
-        except InvalidWatcherConfiguration:
-            logging.error(f'Invalid Configuration (#{idx + 1})!')
-    return watcher_objects
+            self.url = watcher_item['URL']
+            self.whitelist = watcher_item['Whitelist']
+            self.blacklist = watcher_item['Blacklist']
+            self.alert_changes = watcher_item['AlertAnyChange']
+            self.md5 = None
+            self.previous_whitelisted = []
+            self.previous_blacklisted = []
+        except KeyError as exception:
+            invalid_key = exception.args[0]
+            raise InvalidWatcherConfiguration(
+                f'Invalid configuration! Key {invalid_key} was not supplied!'
+            )    
+
+
+    def get_html(self):
+        """Get the current HTML from the web
+
+        Returns:
+            str: The HTML retrived from the given URL
+        """      
+        return requests.get(self.url).text
+
+    
+    def set_hash(self, new_hash: str):
+        """Set the last known hash to a new value
+
+        Args:
+            new_hash (str): the updated hash
+        """
+        self.md5 = new_hash
+
+
+    def __hash__(self):
+        """Get the last known hash of the site's HTML
+
+        Returns:
+            str: The last calculated hash
+        """        
+        return self.md5
