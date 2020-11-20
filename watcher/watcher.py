@@ -22,7 +22,7 @@ class Watcher:
             self.url = watcher_item['URL']
             self.whitelist = watcher_item['Whitelist']
             self.blacklist = watcher_item['Blacklist']
-            self.alert_changes = watcher_item['AlertAnyChange']
+            self.alert_any_change = watcher_item['AlertAnyChange']
             self.md5 = None
             self.previous_whitelisted = []
             self.previous_blacklisted = []
