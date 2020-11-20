@@ -7,7 +7,7 @@ from watcher.watcher_manager import WatcherManager
 from secrets import TELEGRAM_TOKEN, BOT_PASSWORD
 
 logging.basicConfig(level=logging.INFO)
-CONFIG_FILE = 'example_config.json'
+CONFIG_FILE = 'config.json'
 TICK_FREQUENCY = 60
 
 class Bot:
