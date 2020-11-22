@@ -1,6 +1,7 @@
 {
     "watchers": [
         {
+            "Name" : "A_LABEL_FOR_THE_URL",
             "URL": "http://URLTOMONITOR.com/",
             "Whitelist" : ["REGEX_TO_MATCH_AGAINST"],
             "Blacklist" : ["REGEX_TO_MATCH_AGAINST"],
@@ -19,6 +20,9 @@
     "twilio_config" : {
         "sid": "",
         "auth": "",
-        "call_receiver": "+9725XXXXXXXX"
+        "receiver_number": "+XXXXXXXXXXXX",
+        "caller_number" : "+XXXXXXXXXXXX",
+        "tick_frequency" : 60,
+        "debug_mode" : false
     }
 }
