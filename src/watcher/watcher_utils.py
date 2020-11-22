@@ -1,33 +1,30 @@
 """
 Utility functions used in the Watcher codebase
 """
-
-import json
 import logging
 import hashlib
 from watcher.watcher import Watcher, InvalidWatcherConfiguration
 
-def parse_configuration(json_config: str):
+def read_watchers_from_config(watchers_list: list):
     """Parse the supplied json into a list of Watcher objects.
 
     Args:
-        json_config (str): Raw JSON from config.json
+        watchers_list (list): List of watcher objects from the config file
 
     Returns:
         list: List of the configurations as Watcher objects
     """
-    logging.debug('Parsing configuraion...')
-    config = json.loads(json_config)
+    logging.debug('Creating Watcher objects...')
     watcher_objects = []
-    for idx, watcher_item in enumerate(config.get('watchers')):
+    for watcher_item in watchers_list:
         try:
             watcher_objects.append(
                 Watcher(watcher_item)
             )
         except InvalidWatcherConfiguration:
-            logging.error(f'Invalid Configuration (#{idx + 1})!')
+            logging.error(f'Invalid Configuration ({watcher_item.name})!')
     number_of_watchers = len(watcher_objects)
-    logging.info(f'Parsed {number_of_watchers} watchers')
+    logging.info(f'Created {number_of_watchers} watchers')
     return watcher_objects
 
 

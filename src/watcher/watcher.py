@@ -4,7 +4,7 @@ Define the Watcher class
 import requests
 
 class InvalidWatcherConfiguration(Exception):
-    """ Indicate the the configuration given to the watcher is invalid """
+    """ Indicate that the configuration given to the watcher is invalid """
     pass
 
 class Watcher:
@@ -19,6 +19,7 @@ class Watcher:
             InvalidWatcherConfiguration: If the configuration is incomplete.
         """        
         try:
+            self.name = watcher_item['Name'] 
             self.url = watcher_item['URL']
             self.whitelist = watcher_item['Whitelist']
             self.blacklist = watcher_item['Blacklist']

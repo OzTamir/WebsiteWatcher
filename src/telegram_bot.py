@@ -1,28 +1,22 @@
+"""
+Define the Telegram bot version of WebsiteWatcher
+"""
+
 import logging
 
 from telegram.ext import Updater, CommandHandler
-
-from watcher.watcher_utils import parse_configuration
 from watcher.watcher_manager import WatcherManager
-from secrets import TELEGRAM_TOKEN, BOT_PASSWORD
-
-logging.basicConfig(level=logging.INFO)
-CONFIG_FILE = 'config.json'
-TICK_FREQUENCY = 60
 
 class Bot:
-    manager: WatcherManager = None
-    allowed_users: dict = dict()
-
-    @classmethod
-    def watch_tick(bot, context):
+    """ A Telegram Bot to watch and alert for URL changes """
+    def watch_tick(self, context):
         """Run a round of WatcherManager and report any changes
 
         Args:
-            bot (Bot): The bot class
+            self (Bot): The bot class
             context (telegram.ext.callbackcontext.CallbackContext): Object used for interaction with Telegram
         """
-        for watcher, change in bot.manager.watch():
+        for watcher, change in self.manager.watch():
             # Skip the logic if there was no change
             if not change.did_change:
                 logging.debug(f'{watcher.url} did not change')
@@ -43,90 +37,80 @@ class Bot:
                 context.bot.send_message(chat_id=context.job.context, text=message)
 
 
-    @classmethod
-    def start_watching(class_obj, update, context):
+    def start_watching(self, update, context):
         """ Start the JobQueue that ticks the watcher """
         logging.debug(f'Got /watch command from chat id {update.message.chat_id}')
-        if Bot.allowed_users.get(update.message.chat_id, None) is None:
+        if self.allowed_users.get(update.message.chat_id, None) is None:
             context.bot.send_message(chat_id=update.message.chat_id, text="Unauthorized user! Please use the /unlock command and supply a password.")
             return
-        context.bot.send_message(chat_id=update.message.chat_id, text=f"Let's go! I will now run every {TICK_FREQUENCY} seconds.")
-        context.job_queue.run_repeating(Bot.watch_tick, TICK_FREQUENCY, context=update.message.chat_id)
+        context.bot.send_message(chat_id=update.message.chat_id, text=f"Let's go! I will now run every {self.tick_frequency} seconds.")
+        context.job_queue.run_repeating(self.watch_tick, self.tick_frequency, context=update.message.chat_id)
 
 
-    @classmethod
-    def stop_watching(class_obj, update, context):
+    def stop_watching(self, update, context):
         """ Stop the JobQueue that ticks the watcher """
         logging.debug(f'Got /stop command from chat id {update.message.chat_id}')
-        if Bot.allowed_users.get(update.message.chat_id, None) is None:
+        if self.allowed_users.get(update.message.chat_id, None) is None:
             context.bot.send_message(chat_id=update.message.chat_id, text="Unauthorized user! Please use the /unlock command and supply a password.")
             return
         context.bot.send_message(chat_id=update.message.chat_id, text='OK, I will stop running now.')
         context.job_queue.stop()
 
 
-    @classmethod
-    def unlock(class_obj, update, context):
+    def unlock(self, update, context):
         """ Allow a user to authnticate """
         logging.debug(f'Got /unlock command from chat id {update.message.chat_id}')
         if len(context.args) != 1:
             context.bot.send_message(chat_id=update.message.chat_id, text='Usage: /unlock {password}')
             return
-        if Bot.allowed_users.get(update.message.chat_id, None) is not None:
+        if self.allowed_users.get(update.message.chat_id, None) is not None:
             context.bot.send_message(chat_id=update.message.chat_id, text="Already Authenticated! Use /watch to run me.")
             return
-        if context.args[0] == BOT_PASSWORD:
-            Bot.allowed_users[update.message.chat_id] = True
+        if context.args[0] == self.bot_password:
+            self.allowed_users[update.message.chat_id] = True
             context.bot.send_message(chat_id=update.message.chat_id, text='Authenticated! Use /watch to run me.')
         else:
             context.bot.send_message(chat_id=update.message.chat_id, text='Wrong password, please try again.')
 
 
-    @classmethod
-    def lock(class_obj, update, context):
+    def lock(self, update, context):
         """ Remove a user from the authnticated users list """
         logging.debug(f'Got /lock command from chat id {update.message.chat_id}')
-        if Bot.allowed_users.get(update.message.chat_id, None) is None:
+        if self.allowed_users.get(update.message.chat_id, None) is None:
             context.bot.send_message(chat_id=update.message.chat_id, text="Unauthorized user! Please use the /unlock command and supply a password.")
             return
-        del Bot.allowed_users[update.message.chat_id]
+        del self.allowed_users[update.message.chat_id]
         context.job_queue.stop()
         context.bot.send_message(chat_id=update.message.chat_id, text='Logged off and stopped. Bye!')
 
-def setup_watchers():
-    """ Setup the Bot class """
-    logging.debug('Setting up the watcher...')
-    with open(CONFIG_FILE, 'rb') as config_file:
-        raw_json = config_file.read()
-    watchers = parse_configuration(raw_json)
-    Bot.manager = WatcherManager(watchers)
+
+    def run_bot(self):
+        """ Run the bot and wait for messages """
+        self.updater.start_polling()
+        logging.info('Bot started! Waiting for messages...')
+        self.updater.idle()
 
 
-def setup_bot():
-    """Setup the bot API and handlers
+    def __init__(self, watcher_manager: WatcherManager, telegram_token: str, password: str, tick_frequency: int=60):
+        """ Initialize the bot
 
-    Returns:
-        telegram.ext.Updater: Used to interact with Telegram's API
-    """
-    logging.debug('Registering with Telegram...')
-    updater = Updater(TELEGRAM_TOKEN)
-    updater.dispatcher.add_handler(CommandHandler('unlock', Bot.unlock, pass_job_queue=True))
-    updater.dispatcher.add_handler(CommandHandler('lock', Bot.lock, pass_job_queue=True))
+        Args:
+            watcher_manager (WatcherManager): Object representation of the config's list of watched URLs
+            telegram_token (str): The token recieved from @BotFather
+            password (str): A password used to authenticate the bot's users
+            tick_frequency (int, optional): What is the frequency of checking for updates. Defaults to 60.
+        """
+        logging.debug('Registering with Telegram...')
 
-    updater.dispatcher.add_handler(CommandHandler('watch', Bot.start_watching, pass_job_queue=True))
-    updater.dispatcher.add_handler(CommandHandler('stop', Bot.stop_watching, pass_job_queue=True))
-    return updater
+        self.manager = watcher_manager
+        self.bot_password = password
+        self.tick_frequency = tick_frequency
+        self.allowed_users = dict()
 
-def run_bot(updater):
-    updater.start_polling()
-    logging.info('Bot started! Waiting for messages...')
-    updater.idle()
+        updater = Updater(telegram_token)
+        updater.dispatcher.add_handler(CommandHandler('unlock', self.unlock, pass_job_queue=True))
+        updater.dispatcher.add_handler(CommandHandler('lock', self.lock, pass_job_queue=True))
 
-def main():
-    logging.info('Starting the bot...')
-    setup_watchers()
-    updater = setup_bot()
-    run_bot(updater)
-
-if __name__ == '__main__':
-    main()
+        updater.dispatcher.add_handler(CommandHandler('watch', self.start_watching, pass_job_queue=True))
+        updater.dispatcher.add_handler(CommandHandler('stop', self.stop_watching, pass_job_queue=True))
+        self.updater = updater
