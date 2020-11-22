@@ -6,4 +6,12 @@
             "Blacklist" : ["REGEX_TO_MATCH_AGAINST"],
             "AlertAnyChange" : true
         }
-]}
+    ],
+    "mode": {
+        "telegram": true,
+        "twilio": false
+    },
+    "twilio_config" : {
+        "call_reciver": "+972-5XXXXXXXX"
+    }
+}
