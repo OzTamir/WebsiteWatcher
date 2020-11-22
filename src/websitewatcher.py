@@ -11,7 +11,7 @@ from twilio_mode import TwilioWatcher
 from telegram_bot import Bot
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='[WebsiteWatcher][%(levelname)s][%(filename)s:%(funcName)s]: %(message)s')
 CONFIG_FILE = 'config.json'
 
