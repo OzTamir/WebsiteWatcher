@@ -133,3 +133,4 @@ dmypy.json
 secrets/
 
 my_config.json
+empty_config.json
