@@ -1,9 +1,0 @@
-{
-    "watchers": [
-        {
-            "URL": "http://www.randomnumberapi.com/api/v1.0/random?min=1&max=10&count=5",
-            "Whitelist" : ["7"],
-            "Blacklist" : ["10"],
-            "AlertAnyChange" : true
-        }
-]}

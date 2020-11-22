@@ -11,6 +11,9 @@
         "telegram": true,
         "twilio": false
     },
+    "telegram_config" : {
+        "tick_frequency" : 60
+    },
     "twilio_config" : {
         "call_reciver": "+9725XXXXXXXX"
     }

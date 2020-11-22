@@ -131,4 +131,5 @@ dmypy.json
 
 # Secrets folder
 secrets/
-config.json
+
+my_config.json
