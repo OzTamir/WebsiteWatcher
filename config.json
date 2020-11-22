@@ -12,6 +12,6 @@
         "twilio": false
     },
     "twilio_config" : {
-        "call_reciver": "+972-5XXXXXXXX"
+        "call_reciver": "+9725XXXXXXXX"
     }
 }
