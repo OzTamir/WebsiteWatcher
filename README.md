@@ -1,8 +1,11 @@
 # WebsiteWatcher
- A dockerized telegram bot to watch for changes in websites
+ A dockerized app to watch for changes in websites and update you via call (using Twilio) or IM (using Telegram)
 
 ## How to use
-0. [Create a telegram bot](https://core.telegram.org/bots) and get your token.
+0. Get your API keys:
+    - Token from Telegram
+    or
+    - Auth and SID tokens from Twilio
 1. Clone the repository locally:
 ```bash
 git clone https://github.com/OzTamir/WebsiteWatcher.git
