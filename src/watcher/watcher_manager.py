@@ -26,7 +26,7 @@ class WatcherManager:
         Returns:
             ChangeEvent: Information about whether the site changed
         """
-        logging.info(f'Now Running Watcher for {watcher.url}')
+        logging.info(f'Now Running Watcher for {watcher.name}')
         change = ChangeEvent()
         # Grab the HTML and calculate the MD5 for it
         new_html = watcher.get_html()

@@ -16,13 +16,13 @@ def read_watchers_from_config(watchers_list: list):
     """
     logging.debug('Creating Watcher objects...')
     watcher_objects = []
-    for idx, watcher_item in enumerate(watchers_list):
+    for watcher_item in watchers_list:
         try:
             watcher_objects.append(
                 Watcher(watcher_item)
             )
         except InvalidWatcherConfiguration:
-            logging.error(f'Invalid Configuration (#{idx + 1})!')
+            logging.error(f'Invalid Configuration ({watcher_item.name})!')
     number_of_watchers = len(watcher_objects)
     logging.info(f'Created {number_of_watchers} watchers')
     return watcher_objects

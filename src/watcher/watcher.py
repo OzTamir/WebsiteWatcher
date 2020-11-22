@@ -19,6 +19,7 @@ class Watcher:
             InvalidWatcherConfiguration: If the configuration is incomplete.
         """        
         try:
+            self.name = watcher_item['Name'] 
             self.url = watcher_item['URL']
             self.whitelist = watcher_item['Whitelist']
             self.blacklist = watcher_item['Blacklist']

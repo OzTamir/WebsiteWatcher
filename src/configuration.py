@@ -55,4 +55,7 @@ class Configuration:
         """
         self.sid = self.from_config('twilio_config').get('sid')
         self.auth = self.from_config('twilio_config').get('auth')
-        self.call_receiver = self.from_config('twilio_config').get('call_receiver')
+        self.receiver_number = self.from_config('twilio_config').get('receiver_number')
+        self.caller_number = self.from_config('twilio_config').get('caller_number')
+        self.tick_frequency = self.from_config('twilio_config').get('tick_frequency')
+        self.debug_mode = self.from_config('twilio_config').get('debug_mode')
