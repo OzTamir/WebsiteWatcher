@@ -4,7 +4,7 @@ Define the WatcherManager class
 import logging
 from watcher.watcher import Watcher
 from watcher.change_event import ChangeEvent
-from watcher.watcher_utils import calculate_md5, search_wordlist
+from watcher.watcher_utils import calculate_md5, search_wordlist, read_watchers_from_config
 
 class WatcherManager:
     """ Manage watchers """
@@ -14,7 +14,7 @@ class WatcherManager:
         Args:
             watchers (list): a list of Watcher objects
         """
-        self.watchers = watchers
+        self.watchers = read_watchers_from_config(watchers)
 
     
     def run_watcher(self, watcher: Watcher):

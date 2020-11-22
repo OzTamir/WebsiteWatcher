@@ -4,7 +4,7 @@ Define the Watcher class
 import requests
 
 class InvalidWatcherConfiguration(Exception):
-    """ Indicate the the configuration given to the watcher is invalid """
+    """ Indicate that the configuration given to the watcher is invalid """
     pass
 
 class Watcher:
