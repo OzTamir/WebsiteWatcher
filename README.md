@@ -11,7 +11,7 @@
 git clone https://github.com/OzTamir/WebsiteWatcher.git
 ```
 2. Edit the config.json file with the desired sites watching settings (see example_config.json):
-    - Be sure to set the telegram/twilio configuration with your API tokens
+    - Be sure to set the Telegram/Twilio configuration with your API tokens
     - Notice that trying to mark both modes as enabled will raise an exception
 3. Build the Docker image from the directory:
 ```bash
