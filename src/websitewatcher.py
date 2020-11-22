@@ -7,28 +7,12 @@ import json
 import logging
 from configuration import Configuration
 from watcher.watcher_manager import WatcherManager
-from bot import Bot
+from telegram_bot import Bot
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='[WebsiteWatcher][%(levelname)s][%(filename)s:%(funcName)s]: %(message)s')
 CONFIG_FILE = 'config.json'
-
-def read_configuration(config_path: str):
-    """Read the configuration from the file and deserialize it
-
-    Args:
-        config_path (str): The path for config.json
-
-    Returns:
-        Configuration: The configuration as an object
-    """
-    logging.debug(f'Reading the configuration from {config_path}')
-    with open(config_path, 'rb') as config_file:
-        raw_json = config_file.read()
-    config_dict = json.loads(raw_json)
-    return Configuration(config_dict)
-
 
 def telegram_mode(watcher: WatcherManager, config: Configuration):
     """Run the telegram bot
@@ -46,7 +30,7 @@ def twilio_mode(watcher: WatcherManager, config: Configuration):
 def main():
     logging.info('Starting...')
     # Setup the configuration and the WatcherManager, both of which are the same in both modes
-    config = read_configuration(CONFIG_FILE)
+    config = Configuration(CONFIG_FILE)
     watcher_manager = WatcherManager(config.watchers_list)
 
     # Run in the configured mode
